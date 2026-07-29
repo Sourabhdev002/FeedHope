@@ -39,3 +39,20 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/src/generated/prisma
+
+# Local databases
+*.db
+
+# Local IDE folders
+.agents/
+.claude/
+.windsurf/
+
+# Local test artifacts
+smoke-test-failure.png
+
+# Local logs
+*.log
+
