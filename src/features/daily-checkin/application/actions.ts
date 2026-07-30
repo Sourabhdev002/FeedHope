@@ -106,6 +106,7 @@ export async function toggleHabitAction(habitName: string, isCompleted: boolean)
     
     // Parse existing habits
     const currentHabits = JSON.parse(checkIn.completedHabits) as string[];
+    console.log("Current habits:", currentHabits);
     
     let newHabits;
     if (isCompleted) {
@@ -113,13 +114,15 @@ export async function toggleHabitAction(habitName: string, isCompleted: boolean)
     } else {
       newHabits = currentHabits.filter((h) => h !== habitName);
     }
+console.log("New habits:", newHabits);
+    const updated = await prisma.dailyCheckIn.update({
+  where: { id: checkIn.id },
+  data: {
+    completedHabits: JSON.stringify(newHabits),
+  },
+});
 
-    await prisma.dailyCheckIn.update({
-      where: { id: checkIn.id },
-      data: {
-        completedHabits: JSON.stringify(newHabits),
-      },
-    });
+console.log("Database now contains:", updated.completedHabits);
 
     revalidatePath("/dashboard");
     return { success: true };
