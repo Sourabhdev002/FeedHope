@@ -1,11 +1,20 @@
-// src/features/auth/infrastructure/auth-client.ts
+import { PrismaClient } from "@/generated/prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 
-import { createAuthClient } from "better-auth/react";
-
-export const authClient = createAuthClient({
-  baseURL:
-    process.env.NEXT_PUBLIC_APP_URL ??
-    (typeof window !== "undefined" ? window.location.origin : undefined),
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL!,
 });
 
-export const { signIn, signUp, signOut, useSession } = authClient;
+const globalForPrisma = globalThis as {
+  prisma?: PrismaClient;
+};
+
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    adapter,
+  });
+
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
+}
